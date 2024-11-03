@@ -200,7 +200,6 @@ void* defaultGet(HashMap hashMap, void* key) {
     }
     return entry->value;
 }
-
 bool defaultRemove(HashMap hashMap, void* key) {
     int index = hashMap->hashCode(hashMap, key);
     Entry entry = &hashMap->list[index];
@@ -244,7 +243,6 @@ bool defaultRemove(HashMap hashMap, void* key) {
     }
     return result;
 }
-
 bool defaultExists(HashMap hashMap, void* key) {
     int index = hashMap->hashCode(hashMap, key);
     Entry entry = &hashMap->list[index];
@@ -271,7 +269,6 @@ bool defaultExists(HashMap hashMap, void* key) {
 
 void defaultClear(HashMap hashMap) {
     for (int i = 0; i < hashMap->listSize; i++) {
-        // 释放冲突值内存
         Entry entry = hashMap->list[i].next;
         while (entry != NULL) {
             Entry next = entry->next;
@@ -280,7 +277,6 @@ void defaultClear(HashMap hashMap) {
         }
         hashMap->list[i].next = NULL;
     }
-    // 释放存储空间
     free(hashMap->list);
     hashMap->list = NULL;
     hashMap->size = -1;
@@ -288,11 +284,10 @@ void defaultClear(HashMap hashMap) {
 }
 
 HashMap createHashMap(HashCode hashCode, Equal equal) {
-    printf("1");
+
     HashMap hashMap = newHashMap();
-    
     hashMap->size = 0;
-    hashMap->listSize = 8;
+    hashMap->listSize = 65536 ;
     hashMap->hashCode = hashCode == NULL ? defaultHashCode : hashCode;
     hashMap->equal = equal == NULL ? defaultEqual : equal;
     hashMap->exists = defaultExists;
@@ -300,8 +295,7 @@ HashMap createHashMap(HashCode hashCode, Equal equal) {
     hashMap->put = defaultPut;
     hashMap->remove = defaultRemove;
     hashMap->clear = defaultClear;
-    hashMap->autoAssign = true; 
-    // 起始分配8个内存空间，溢出时会自动扩充
+    hashMap->autoAssign = true;
     hashMap->list = newEntryList(hashMap->listSize);
     Entry p = hashMap->list;
     for (int i = 0; i < hashMap->listSize; i++) {
@@ -316,10 +310,10 @@ int main() {
     map->put(map, "sasdasd", "asdfasdfds");
     map->put(map, "asdhfgh", "asdfasdfds");
     map->put(map, "4545", "asdfasdfds");
+    map->put(map,"4545","sdfsadefwef");
     map->put(map, "asdfaasdasdsdf", "asdfasdfds");
     map->put(map, "asdasg", "asdfasdfds");
     map->put(map, "qweqeqwe", "asdfasdfds");
-
     printf("key: 4545, exists: %s\n", map->exists(map, "4545") ? "true" : "false");
     printf("4545: %s\n", map->get(map, "4545"));
     printf("remove 4545 %s\n", map->remove(map, "4545") ? "true" : "false");
@@ -329,7 +323,7 @@ int main() {
     HashMapIterator iterator = createHashMapIterator(map);
     while (hasNextHashMapIterator(iterator)) {
         iterator = nextHashMapIterator(iterator);
-        printf("{ key: %s, key: %s, hashcode: %d }\n",
+        printf("{ key: %s, value: %s, hashcode: %d }\n",
             (char *)iterator->entry->key, (char *)iterator->entry->value, iterator->hashCode);
     }
     map->clear(map);
