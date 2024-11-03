@@ -149,7 +149,9 @@ void resetHashMap(HashMap hashMap, int listSize) {
     }
     free(tempList);
 }
-
+bool defaultEqual(void *key1,void *key2){
+    return key1==key2;
+}
 void defaultPut(HashMap hashMap, void* key, void* value) {
     if (hashMap->autoAssign && hashMap->size >= hashMap->listSize) {
 
@@ -290,7 +292,7 @@ HashMap createHashMap(HashCode hashCode, Equal equal) {
     hashMap->size = 0;
     hashMap->listSize = 8;
     hashMap->hashCode = hashCode == NULL ? defaultHashCode : hashCode;
-    hashMap->equal = equal == NULL ? defaultEqual : equal;
+    //hashMap->equal = equal == NULL ? defaultEqual : equal;
     hashMap->exists = defaultExists;
     hashMap->get = defaultGet;
     hashMap->put = defaultPut;
