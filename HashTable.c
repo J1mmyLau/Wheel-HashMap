@@ -288,11 +288,13 @@ void defaultClear(HashMap hashMap) {
 }
 
 HashMap createHashMap(HashCode hashCode, Equal equal) {
+    printf("1");
     HashMap hashMap = newHashMap();
+    
     hashMap->size = 0;
     hashMap->listSize = 8;
     hashMap->hashCode = hashCode == NULL ? defaultHashCode : hashCode;
-    //hashMap->equal = equal == NULL ? defaultEqual : equal;
+    hashMap->equal = equal == NULL ? defaultEqual : equal;
     hashMap->exists = defaultExists;
     hashMap->get = defaultGet;
     hashMap->put = defaultPut;
